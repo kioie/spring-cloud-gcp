@@ -358,7 +358,9 @@ public class DatastoreTemplate implements DatastoreOperations, ApplicationEventP
     QueryResults results = getDatastoreReadWriter().run(query);
     DatastoreResultsIterable resultsIterable;
     if (results.getResultClass() == Key.class) {
-      resultsIterable = new DatastoreResultsIterable(results, results.getCursorAfter());
+      List<Key> keyList = new ArrayList<>();
+      results.forEachRemaining(e -> keyList.add((Key) e));
+      resultsIterable = new DatastoreResultsIterable(keyList, results.getCursorAfter());
     } else {
       resultsIterable =
           new DatastoreResultsIterable<>(
